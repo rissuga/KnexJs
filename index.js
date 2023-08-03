@@ -32,8 +32,7 @@ app.post('/user', async (req, res) => {
   }
 });
 
-
-// Get all data user
+// Get list of user
 app.get('/user', async(req,res) => {
   try{
     // Contoh penggunaan model untuk mengambil data
@@ -49,7 +48,6 @@ app.get('/user', async(req,res) => {
 })
 
 // Get by Id
-// Endpoint untuk mengambil data pengguna berdasarkan ID
 app.get('/user/:id', async (req, res) => {
   try {
     const id = req.params.id;
@@ -97,7 +95,9 @@ app.delete('/user/:id', async (req, res) => {
   }
 });
 
-// ROLE
+// ROLE //
+
+// Get list of role
 app.get('/role', async(req,res) => {
   try{
     // Contoh penggunaan model untuk mengambil data
@@ -108,8 +108,6 @@ app.get('/role', async(req,res) => {
     res.status(404).json({ error: 'Data tidak ditemukan' });
   }
 })
-
-// Get list role
 
 
 app.listen(port, () => {
