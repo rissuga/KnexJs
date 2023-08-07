@@ -3,6 +3,7 @@ const Book = require("./book");
 const bodyParser = require('body-parser');
 const knexConfig = require('./knexfile');
 const knex = require('knex')(knexConfig.development); 
+const controller = require ("./app/controller")
 
 const app = express();
 app.use(bodyParser.json());
@@ -17,86 +18,14 @@ app.get("/book", (req, res) => {
     res.status(200).json(books)
 });
 
-// Create User
-app.post('/user', async (req, res) => {
-  try {
-    const { name, role_id } = req.body;
-
-    const newUser = await knex('users')
-      .insert({ name, role_id });
-      console.log('User baru berhasil ditambahkan:', newUser);
-      res.status(201).json({ message: 'User baru berhasil ditambahkan', id: newUser[0] });
-  } catch (error) { 
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Get list of user
-app.get('/user', async(req,res) => {
-  try{
-    // Contoh penggunaan model untuk mengambil data
-    const user = await knex('users')
-      .select('users.id','users.name', 'role.name as role_name')
-      .from('users')
-      .leftJoin('role', 'users.role_id', 'role.id')
-      res.status(201).json(user);
-
-  }catch{
-    res.status(404).json({ error: 'Data tidak ditemukan' });
-  }
-})
-
-// Get by Id
-app.get('/user/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-
-    // Gunakan knex untuk mengambil data pengguna berdasarkan ID
-    const user = await knex('users').where('id', id).first();
-
-    if (!user) {
-      return res.status(404).json({ error: 'Data tidak ditemukan' });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Update user
-app.put('user/:id', async(req,res)=>{
-  try {
-    const id = req.params.id;
-    const name = req.body.name;
-    const role = req.body.role;
-
-    const updatedUser = await knex('users').where('id', id).update({ name, role });
-    console.log('Data pengguna yang diupdate:', updatedUser);
-    res.status(200).json({ message: 'Data pengguna berhasil diupdate' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-})
-
-// Delete user
-app.delete('/user/:id', async (req, res) => {
-  try {
-    const id = req.params.id;
-    const deletedUser = await knex('users').where('id', id).del(); // Gunakan knex untuk menghapus data
-    console.log('Data pengguna yang dihapus:', deletedUser);
-    res.status(200).json({ message: 'Data pengguna berhasil dihapus' });
-  } catch (error) { 
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
+// USER //
+app.post('/user', controller.userController.create);
+app.get('/user', controller.userController.list);
+app.get('/user/:id', controller.userController.getById);
+app.put('user/:id', controller.userController.update);
+app.delete('/user/:id', controller.userController.delete);
 
 // ROLE //
-
 // Get list of role
 app.get('/role', async(req,res) => {
   try{
