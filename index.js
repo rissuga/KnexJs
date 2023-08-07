@@ -3,9 +3,13 @@ const Book = require("./book");
 const bodyParser = require('body-parser');
 const knexConfig = require('./knexfile');
 const knex = require('knex')(knexConfig.development); 
-const controller = require ("./app/controller")
+const controller = require ("./app/controller");
+
+const cors = require("cors");
 
 const app = express();
+const router = express.Router();
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use(express.json());
@@ -18,11 +22,12 @@ app.get("/book", (req, res) => {
     res.status(200).json(books)
 });
 
+app.post('/user/login', controller.authController.login)
 // USER //
 app.post('/user', controller.userController.create);
 app.get('/user', controller.userController.list);
 app.get('/user/:id', controller.userController.getById);
-app.put('user/:id', controller.userController.update);
+app.put('/user/:id', controller.userController.update);
 app.delete('/user/:id', controller.userController.delete);
 
 // ROLE //
