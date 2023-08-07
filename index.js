@@ -22,8 +22,9 @@ app.get("/book", (req, res) => {
     res.status(200).json(books)
 });
 
-app.post('/user/login', controller.authController.login)
 // USER //
+app.post('/user/login', controller.authController.login);
+app.post('/user/register', controller.authController.register)
 app.post('/user', controller.userController.create);
 app.get('/user', controller.userController.list);
 app.get('/user/:id', controller.userController.getById);

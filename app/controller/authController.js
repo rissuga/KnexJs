@@ -5,7 +5,17 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken")
 
 
-  module.exports = {
+const encryptPassword = async (encryptedPassword) => {
+  try{
+    const password = await bcrypt.hash(encryptedPassword,10);
+    return password;
+  }catch(err){
+    return err;
+  }
+}
+
+
+module.exports = {
 
         async login (req,res) {
           try {
@@ -46,6 +56,38 @@ const jwt = require("jsonwebtoken")
             res.status(500).json({ error: 'Terjadi kesalahan server' });
           }
 
+        },
+
+        async register (req,res) {
+          try {
+            const { name,email } = req.body;
+            const password = await encryptPassword(req.body.password)
+            const dataRegis = {
+              name, 
+              email, 
+              password,
+              role_id: 2
+            }
+
+            const user = await knex('users').where('email', email).first();
+
+            if(user){
+              return res.status(412).json({
+                data: null,
+                message: "Email has been taken !!",
+                status: "Failed"
+              })
+            }else{
+              const newUser = await knex('users')
+                .insert(dataRegis);
+                console.log('User baru berhasil ditambahkan:', newUser);
+                res.status(201).json({ message: 'User baru berhasil ditambahkan', id: newUser[0] });
+            }
+
+          } catch (error) { 
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
+          }
         }
   }
 

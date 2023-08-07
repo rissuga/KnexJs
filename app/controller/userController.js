@@ -29,7 +29,7 @@ module.exports = {
           } catch (error) { 
             console.error(error);
             res.status(500).json({ error: 'Internal server error' });
-          }
+        }
     },
 
     async getById(req,res) {
